@@ -32,6 +32,10 @@ module.exports = {
         ]
       },
       {
+        test: /three\/examples\/js/,
+        use: 'imports-loader?THREE=three'
+      },
+      {
         test: /\.css$/,
         loader: 'style-loader!css-loader'
       },
@@ -48,16 +52,5 @@ module.exports = {
         loader: 'json-loader'
       }
     ]
-  },
-  resolve: {
-    alias: {
-      three$: 'three/build/three.min.js',
-      'three/.*$': 'three'
-    }
-  },
-  plugins: [
-    new webpack.ProvidePlugin({
-      THREE: 'three'
-    })
-  ]
+  }
 }

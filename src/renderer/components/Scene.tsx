@@ -1,5 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
+import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
 import 'three/examples/js/loaders/LoaderSupport'
 import 'three/examples/js/loaders/OBJLoader2'

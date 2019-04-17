@@ -24,7 +24,6 @@ class Launcher {
           webSecurity: false
         }
       })
-
       mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 
       // if (process.env.NODE_ENV === 'development') {
