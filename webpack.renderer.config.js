@@ -1,3 +1,5 @@
+const webpack = require('webpack')
+
 module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
@@ -46,5 +48,16 @@ module.exports = {
         loader: 'json-loader'
       }
     ]
-  }
+  },
+  resolve: {
+    alias: {
+      three$: 'three/build/three.min.js',
+      'three/.*$': 'three'
+    }
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      THREE: 'three'
+    })
+  ]
 }

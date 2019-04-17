@@ -1,14 +1,19 @@
 import * as React from 'react'
-import * as THREE from 'three'
 import styled from 'styled-components'
-;(window as any).THREE = THREE
+import 'three/examples/js/controls/OrbitControls'
+import 'three/examples/js/loaders/LoaderSupport'
+import 'three/examples/js/loaders/OBJLoader2'
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
 `
 
-export default class Scene extends React.Component<any> {
+interface IProps {
+  file: string
+}
+
+export default class Scene extends React.Component<IProps> {
   scene = null
   camera = null
   container: React.RefObject<HTMLDivElement> = React.createRef()
@@ -18,7 +23,7 @@ export default class Scene extends React.Component<any> {
     this.init()
   }
 
-  componentWillReceiveProps(np) {
+  componentWillReceiveProps(np: IProps) {
     if (np.file && np.file !== this.props.file) {
       this.loadFile(np.file)
     }
@@ -51,9 +56,9 @@ export default class Scene extends React.Component<any> {
     this.scene.add(light)
 
     // init controls
-    require('three/examples/js/controls/OrbitControls')
-    const controls = new THREE['OrbitControls'](camera, renderer.domElement)
+    console.log(THREE['OrbitControls'])
 
+    const controls = new THREE['OrbitControls'](camera, renderer.domElement)
     window.addEventListener('resize', () => {
       renderer.setSize(this.rect.width, this.rect.height)
       camera.aspect = this.rect.width / this.rect.height
@@ -71,8 +76,6 @@ export default class Scene extends React.Component<any> {
 
   loadFile(file: string) {
     this.scene.remove(this.showingMesh)
-    require('three/examples/js/loaders/LoaderSupport')
-    require('three/examples/js/loaders/OBJLoader2')
 
     const loader = new THREE['OBJLoader2']()
     loader.load(`http://127.0.0.1:7777?path=${file}`, e => {
@@ -90,7 +93,7 @@ export default class Scene extends React.Component<any> {
   render() {
     return (
       <Wrapper
-        onDragOver={e => e.preventDefault()}
+        onDragOver={(e: DragEvent) => e.preventDefault()}
         onDrop={this.onDrop}
         ref={this.container}
       />

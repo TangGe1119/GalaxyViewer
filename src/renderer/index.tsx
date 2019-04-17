@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { render } from 'react-dom'
 import styled from 'styled-components'
-import './global.css'
 
+import './global.css'
 import Header from './components/Header'
 import Viewer from './components/Viewer'
 
