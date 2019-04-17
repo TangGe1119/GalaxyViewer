@@ -15,3 +15,13 @@ You can add code to webpack.main.config and webpack.renderer.conig.js to add mor
 all config about webpack or babel can be customized
 
 Looking for more detail config, you can go [https://v6.electronforge.io](https://v6.electronforge.io)
+
+
+## Formats
+
+* GLTF
+* OBJ
+* STL
+* VRML
+* VTK
+* ...

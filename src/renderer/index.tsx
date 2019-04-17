@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import './global.css'
 
 import Header from './components/Header'
+import Viewer from './components/Viewer'
 
 const Wrapper = styled.div`
   height: 100%;
@@ -12,6 +13,7 @@ const Wrapper = styled.div`
 const App = () => (
   <Wrapper>
     <Header />
+    <Viewer />
   </Wrapper>
 )
 

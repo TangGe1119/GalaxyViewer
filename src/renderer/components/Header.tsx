@@ -7,6 +7,7 @@ const Wrapper = styled.div`
   line-height: 40px;
   color: #888888;
   border-bottom: 1px solid #444444;
+  box-sizing: border-box;
   position: absolute;
   top: 0;
   left: 0;
@@ -15,5 +16,5 @@ const Wrapper = styled.div`
 `
 
 export default function Header() {
-  return <Wrapper>GalaxViewer</Wrapper>
+  return <Wrapper>GalaxyViewer</Wrapper>
 }

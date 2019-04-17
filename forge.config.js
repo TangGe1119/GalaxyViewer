@@ -4,7 +4,7 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        name: 'my_new_app'
+        name: 'galaxy-viewer'
       }
     },
     {

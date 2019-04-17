@@ -20,7 +20,8 @@
     "electron-squirrel-startup": "^1.0.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "styled-components": "^4.2.0"
+    "styled-components": "^4.2.0",
+    "three": "^0.103.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
