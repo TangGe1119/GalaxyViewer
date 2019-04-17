@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1'
 
@@ -15,16 +15,13 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    frame: false,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY
     }
   })
 
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
-
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.webContents.openDevTools()
-  }
 
   mainWindow.on('closed', () => {
     mainWindow = null
@@ -42,5 +39,11 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()
+  }
+})
+
+ipcMain.on('win-close', () => {
+  if (mainWindow) {
+    mainWindow.close()
   }
 })
