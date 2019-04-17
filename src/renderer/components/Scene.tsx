@@ -12,6 +12,7 @@ export default class Scene extends React.Component<any> {
   scene = null
   camera = null
   container: React.RefObject<HTMLDivElement> = React.createRef()
+  showingMesh: null
 
   componentDidMount() {
     this.init()
@@ -69,17 +70,30 @@ export default class Scene extends React.Component<any> {
   }
 
   loadFile(file: string) {
+    this.scene.remove(this.showingMesh)
     require('three/examples/js/loaders/LoaderSupport')
     require('three/examples/js/loaders/OBJLoader2')
 
     const loader = new THREE['OBJLoader2']()
     loader.load(`http://127.0.0.1:7777?path=${file}`, e => {
-      console.log(e.detail.loaderRootNode)
+      this.showingMesh = e.detail.loaderRootNode
       this.scene.add(e.detail.loaderRootNode)
     })
   }
 
+  onDrop = (e: DragEvent) => {
+    e.preventDefault()
+    const file = e.dataTransfer.files[0]
+    this.loadFile(file.path)
+  }
+
   render() {
-    return <Wrapper ref={this.container} />
+    return (
+      <Wrapper
+        onDragOver={e => e.preventDefault()}
+        onDrop={this.onDrop}
+        ref={this.container}
+      />
+    )
   }
 }
