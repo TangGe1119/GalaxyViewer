@@ -1,4 +1,7 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, Menu, ipcMain, dialog } from 'electron'
+
+declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: any
+declare const MAIN_WINDOW_WEBPACK_ENTRY: any
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1'
 
@@ -7,9 +10,6 @@ if (require('electron-squirrel-startup')) {
 }
 
 let mainWindow
-
-declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: any
-declare const MAIN_WINDOW_WEBPACK_ENTRY: any
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
@@ -28,7 +28,50 @@ const createWindow = () => {
   })
 }
 
-app.on('ready', createWindow)
+const createMenu = () => {
+  const menuTemplate = [
+    {
+      label: 'GalaxyViewer',
+      submenu: [
+        {
+          label: 'About GalaxyViewer',
+          click: () => {
+            dialog.showMessageBox({
+              type: 'info',
+              message: 'GalaxyViewer Version 0.0.1'
+            })
+          }
+        }
+      ]
+    },
+    {
+      label: 'File',
+      submenu: [
+        {
+          label: 'Open...',
+          accelerator: 'CmdOrCtrl+O',
+          click: () => {
+            dialog.showOpenDialog(
+              {
+                properties: ['openFile']
+              },
+              filePaths => {
+                console.log(filePaths)
+              }
+            )
+          }
+        }
+      ]
+    }
+  ]
+  const menu = Menu.buildFromTemplate(menuTemplate)
+  Menu.setApplicationMenu(menu)
+}
+
+app.on('ready', () => {
+  createWindow()
+  createMenu()
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -39,11 +82,5 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()
-  }
-})
-
-ipcMain.on('win-close', () => {
-  if (mainWindow) {
-    mainWindow.close()
   }
 })
