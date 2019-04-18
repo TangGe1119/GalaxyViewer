@@ -26,9 +26,9 @@ class Launcher {
       })
       mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
 
-      // if (process.env.NODE_ENV === 'development') {
-      mainWindow.webContents.openDevTools()
-      // }
+      if (process.env.NODE_ENV === 'development') {
+        mainWindow.webContents.openDevTools()
+      }
 
       mainWindow.on('closed', () => {
         mainWindow = null
@@ -36,7 +36,7 @@ class Launcher {
     }
 
     const createMenu = () => {
-      const menuTemplate = [
+      const menuTemplate: any[] = [
         {
           label: 'GalaxyViewer',
           submenu: [
@@ -71,6 +71,23 @@ class Launcher {
           ]
         }
       ]
+      if (process.env.NODE_ENV === 'development') {
+        menuTemplate.push({
+          label: 'Development',
+          submenu: [
+            {
+              label: 'Reload',
+              accelerator: 'CmdOrCtrl+R',
+              role: 'reload'
+            },
+            {
+              label: 'Devtools',
+              accelerator: 'CmdOrCtrl+D',
+              role: 'toggledevtools'
+            }
+          ]
+        })
+      }
       const menu = Menu.buildFromTemplate(menuTemplate)
       Menu.setApplicationMenu(menu)
     }

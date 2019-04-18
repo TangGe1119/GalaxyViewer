@@ -2,12 +2,26 @@ import * as React from 'react'
 import styled from 'styled-components'
 import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
-import 'three/examples/js/loaders/LoaderSupport'
-import 'three/examples/js/loaders/OBJLoader2'
+import Loader from '../loader'
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
+  position: relative;
+
+  .progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: #dedede;
+    z-index: 99999999;
+  }
 `
 
 interface IProps {
@@ -17,8 +31,13 @@ interface IProps {
 export default class Scene extends React.Component<IProps> {
   scene = null
   camera = null
+  controls = null
   container: React.RefObject<HTMLDivElement> = React.createRef()
-  showingMesh: null
+  showingMesh: any = null
+
+  state = {
+    progress: 0
+  }
 
   componentDidMount() {
     this.init()
@@ -44,22 +63,35 @@ export default class Scene extends React.Component<IProps> {
       0.1,
       1000000
     )
-    camera.position.z = 3
+    this.camera = camera
+    camera.position.z = 300
 
     // init renderer
-    const renderer = new THREE.WebGLRenderer()
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true
+    })
     renderer.setSize(this.rect.width, this.rect.height)
     renderer.setClearColor(0x323232)
     this.container.current.appendChild(renderer.domElement)
 
     // init light
-    const light = new THREE.AmbientLight(0xffffff, 2)
+    const light = new THREE.AmbientLight(0xffffff, 1)
     this.scene.add(light)
 
-    // init controls
-    console.log(THREE['OrbitControls'])
+    const light2 = new THREE.SpotLight(0xbebebe)
+    light2.position.x = 10000
+    light2.position.y = 10000
+    light2.position.z = 10000
+    this.scene.add(light2)
+
+    const light3 = new THREE.SpotLight(0xbebebe)
+    light3.position.x = -10000
+    light3.position.y = -10000
+    light3.position.z = -10000
+    this.scene.add(light3)
 
     const controls = new THREE['OrbitControls'](camera, renderer.domElement)
+    this.controls = controls
     window.addEventListener('resize', () => {
       renderer.setSize(this.rect.width, this.rect.height)
       camera.aspect = this.rect.width / this.rect.height
@@ -71,18 +103,35 @@ export default class Scene extends React.Component<IProps> {
       renderer.render(this.scene, camera)
       controls.update()
     }
-
     animate()
   }
 
-  loadFile(file: string) {
+  async loadFile(file: string) {
     this.scene.remove(this.showingMesh)
-
-    const loader = new THREE['OBJLoader2']()
-    loader.load(`http://127.0.0.1:7777?path=${file}`, e => {
-      this.showingMesh = e.detail.loaderRootNode
-      this.scene.add(e.detail.loaderRootNode)
+    const loader = new Loader(file)
+    const mesh = await loader.load(percent => {
+      this.setState({ progress: percent.toFixed(2) })
     })
+    this.showingMesh = mesh
+    this.controls.reset()
+    this.scene.add(mesh)
+    this.fitCameraToObject()
+    this.setState({ progress: 0 })
+  }
+
+  fitCameraToObject() {
+    if (!this.showingMesh) return
+    const boundingBox = new THREE.Box3()
+    boundingBox.setFromObject(this.showingMesh)
+    let center = new THREE.Vector3()
+    let size = new THREE.Vector3()
+    boundingBox.getCenter(center)
+    boundingBox.getSize(size)
+    const maxDim = Math.max(size.x, size.y, size.z)
+    this.controls.target = center
+    this.camera.position.z = maxDim * 2
+    this.camera.lookAt(center)
+    this.camera.updateProjectionMatrix()
   }
 
   onDrop = (e: DragEvent) => {
@@ -97,7 +146,11 @@ export default class Scene extends React.Component<IProps> {
         onDragOver={(e: DragEvent) => e.preventDefault()}
         onDrop={this.onDrop}
         ref={this.container}
-      />
+      >
+        {this.state.progress > 0 && (
+          <div className="progress">{this.state.progress}%</div>
+        )}
+      </Wrapper>
     )
   }
 }
