@@ -19,6 +19,7 @@ class Launcher {
         width: 1200,
         height: 800,
         titleBarStyle: 'hiddenInset',
+        backgroundColor: '#323232',
         webPreferences: {
           preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
           webSecurity: false
@@ -98,9 +99,7 @@ class Launcher {
     })
 
     app.on('window-all-closed', () => {
-      if (process.platform !== 'darwin') {
-        app.quit()
-      }
+      app.quit()
     })
 
     app.on('activate', () => {
@@ -108,6 +107,8 @@ class Launcher {
         createWindow()
       }
     })
+
+    return app
   }
 }
 
