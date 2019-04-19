@@ -20,6 +20,7 @@ class Launcher {
         height: 800,
         titleBarStyle: 'hiddenInset',
         backgroundColor: '#323232',
+        icon: '../../icon/png/1024x1024.png',
         webPreferences: {
           preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
           webSecurity: false

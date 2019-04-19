@@ -7,7 +7,6 @@ A fancy client to preview almost all format 3d object
 - GLTF
 - OBJ
 - STL
-- VRML
 - VTK
 - SVG
 - VRML

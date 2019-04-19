@@ -5,7 +5,7 @@ const Wrapper = styled.div`
   width: 100%;
   height: 40px;
   line-height: 40px;
-  color: #888888;
+  color: #999;
   border-bottom: 1px solid #444444;
   box-sizing: border-box;
   position: absolute;

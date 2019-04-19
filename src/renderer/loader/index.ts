@@ -16,6 +16,9 @@ export default class Loader {
     this.filepath = filepath
     const s = filepath.split('.')
     this.format = s[s.length - 1].toUpperCase()
+    if (!Loader.formats.includes(this.format)) {
+      throw new Error('format not supported!')
+    }
   }
 
   load(onProcess?: (percent: number) => void): Promise<THREE.Object3D> {

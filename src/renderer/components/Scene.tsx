@@ -1,5 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
+import { remote } from 'electron'
 import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
 import Loader from '../loader'
@@ -22,6 +23,24 @@ const Wrapper = styled.div`
     color: #dedede;
     z-index: 99999999;
   }
+
+  .preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: #444;
+    z-index: 99999999;
+
+    &.active {
+      color: #ffffff;
+    }
+  }
 `
 
 interface IProps {
@@ -36,7 +55,8 @@ export default class Scene extends React.Component<IProps> {
   showingMesh: any = null
 
   state = {
-    progress: 0
+    progress: 0,
+    isOver: false
   }
 
   componentDidMount() {
@@ -108,15 +128,23 @@ export default class Scene extends React.Component<IProps> {
 
   async loadFile(file: string) {
     this.scene.remove(this.showingMesh)
-    const loader = new Loader(file)
-    const mesh = await loader.load(percent => {
-      this.setState({ progress: percent.toFixed(2) })
-    })
-    this.showingMesh = mesh
-    this.controls.reset()
-    this.scene.add(mesh)
-    this.fitCameraToObject()
-    this.setState({ progress: 0 })
+    try {
+      const loader = new Loader(file)
+      const mesh = await loader.load(percent => {
+        this.setState({ progress: percent.toFixed(2) })
+      })
+      this.showingMesh = mesh
+      this.controls.reset()
+      this.scene.add(mesh)
+      this.fitCameraToObject()
+      this.setState({ progress: 0 })
+    } catch (e) {
+      this.setState({ isOver: false })
+      remote.dialog.showMessageBox({
+        type: 'error',
+        message: '文件格式暂不支持'
+      })
+    }
   }
 
   fitCameraToObject() {
@@ -129,26 +157,40 @@ export default class Scene extends React.Component<IProps> {
     boundingBox.getSize(size)
     const maxDim = Math.max(size.x, size.y, size.z)
     this.controls.target = center
-    this.camera.position.z = maxDim * 2
+    this.camera.position.z = maxDim * 3.6
     this.camera.lookAt(center)
     this.camera.updateProjectionMatrix()
   }
 
   onDrop = (e: DragEvent) => {
     e.preventDefault()
+    this.setState({ isOver: false })
     const file = e.dataTransfer.files[0]
     this.loadFile(file.path)
+  }
+
+  onOver = (e: DragEvent) => {
+    this.setState({ isOver: true })
+    e.preventDefault()
   }
 
   render() {
     return (
       <Wrapper
-        onDragOver={(e: DragEvent) => e.preventDefault()}
+        onDragOver={this.onOver}
         onDrop={this.onDrop}
         ref={this.container}
       >
         {this.state.progress > 0 && (
           <div className="progress">{this.state.progress}%</div>
+        )}
+
+        {this.state.progress === 0 && !this.showingMesh && (
+          <div
+            className={`${this.state.isOver ? 'active preview' : 'preview'}`}
+          >
+            Drop file to preview
+          </div>
         )}
       </Wrapper>
     )
