@@ -32,10 +32,14 @@ export default class Viewer extends React.Component {
     })
   }
 
+  changeFile = (file: string) => {
+    this.setState({ file })
+  }
+
   render() {
     return (
       <Wrapper>
-        <Scene file={this.state.file} />
+        <Scene file={this.state.file} changeFile={this.changeFile} />
       </Wrapper>
     )
   }

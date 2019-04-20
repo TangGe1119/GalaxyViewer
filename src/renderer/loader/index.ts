@@ -10,7 +10,7 @@ export default class Loader {
   filepath = ''
   format = ''
 
-  static formats = ['OBJ', 'GLTF', 'STL', 'SVG', 'VTK', 'VRMLLoader']
+  static formats = ['OBJ', 'GLTF', 'STL', 'VTK', 'VRML']
 
   constructor(filepath: string) {
     this.filepath = filepath

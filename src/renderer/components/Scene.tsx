@@ -45,6 +45,7 @@ const Wrapper = styled.div`
 
 interface IProps {
   file: string
+  changeFile: (file: string) => void
 }
 
 export default class Scene extends React.Component<IProps> {
@@ -98,17 +99,9 @@ export default class Scene extends React.Component<IProps> {
     const light = new THREE.AmbientLight(0xffffff, 1)
     this.scene.add(light)
 
-    const light2 = new THREE.SpotLight(0xbebebe)
-    light2.position.x = 10000
+    const light2 = new THREE.HemisphereLight(0xffffff, 0xbebebe, 2)
     light2.position.y = 10000
-    light2.position.z = 10000
     this.scene.add(light2)
-
-    const light3 = new THREE.SpotLight(0xbebebe)
-    light3.position.x = -10000
-    light3.position.y = -10000
-    light3.position.z = -10000
-    this.scene.add(light3)
 
     const controls = new THREE['OrbitControls'](camera, renderer.domElement)
     this.controls = controls
@@ -174,6 +167,17 @@ export default class Scene extends React.Component<IProps> {
     e.preventDefault()
   }
 
+  chooseFile = () => {
+    remote.dialog.showOpenDialog(
+      {
+        properties: ['openFile']
+      },
+      filePaths => {
+        this.props.changeFile(filePaths[0])
+      }
+    )
+  }
+
   render() {
     return (
       <Wrapper
@@ -188,6 +192,7 @@ export default class Scene extends React.Component<IProps> {
         {this.state.progress === 0 && !this.showingMesh && (
           <div
             className={`${this.state.isOver ? 'active preview' : 'preview'}`}
+            onDoubleClick={this.chooseFile}
           >
             Drop file to preview
           </div>
