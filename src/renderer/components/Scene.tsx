@@ -99,8 +99,10 @@ export default class Scene extends React.Component<IProps> {
     const light = new THREE.AmbientLight(0xffffff, 1)
     this.scene.add(light)
 
-    const light2 = new THREE.HemisphereLight(0xffffff, 0xbebebe, 2)
+    const light2 = new THREE.SpotLight(0xbebebe, 2)
+    light2.position.x = 10000
     light2.position.y = 10000
+    light2.position.z = 10000
     this.scene.add(light2)
 
     const controls = new THREE['OrbitControls'](camera, renderer.domElement)
