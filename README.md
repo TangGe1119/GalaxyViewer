@@ -11,3 +11,10 @@ A fancy client to preview almost all format 3d object
 - SVG
 - VRML
 - ...
+
+
+## Screenshots
+
+![主界面](screenshots/1.png)
+
+![显示模型](screenshots/2.png)
