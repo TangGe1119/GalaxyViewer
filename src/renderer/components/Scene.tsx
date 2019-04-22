@@ -126,11 +126,13 @@ export default class Scene extends React.Component<IProps> {
       const mesh = await loader.load(percent => {
         this.setState({ progress: percent.toFixed(2) })
       })
-      this.showingMesh = mesh
-      this.controls.reset()
-      this.scene.add(mesh)
-      this.fitCameraToObject()
-      this.setState({ progress: 0 })
+      if (mesh) {
+        this.controls.reset()
+        this.showingMesh = mesh
+        this.scene.add(mesh)
+        this.fitCameraToObject()
+        this.setState({ progress: 0 })
+      }
     } catch (e) {
       this.setState({ isOver: false })
       remote.dialog.showMessageBox({

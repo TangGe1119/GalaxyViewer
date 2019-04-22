@@ -10,7 +10,7 @@ export default class Loader {
   filepath = ''
   format = ''
 
-  static formats = ['OBJ', 'GLTF', 'STL', 'VTK', 'VRML']
+  static formats = ['OBJ', 'GLTF', 'STL', 'SVG', 'VTK', 'VRML']
 
   constructor(filepath: string) {
     this.filepath = filepath
@@ -51,6 +51,27 @@ export default class Loader {
   private getObject(data) {
     if (this.format === 'OBJ') {
       return data.detail.loaderRootNode
+    }
+
+    if (this.format === 'SVG') {
+      const paths = data.paths
+      const group = new THREE.Group()
+      for (let i = 0; i < paths.length; i++) {
+        const path = paths[i]
+        const material = new THREE.MeshBasicMaterial({
+          color: path.color,
+          side: THREE.DoubleSide,
+          depthWrite: false
+        })
+        const shapes = path.toShapes(true)
+        for (let j = 0; j < shapes.length; j++) {
+          const shape = shapes[j]
+          const geometry = new THREE.ShapeBufferGeometry(shape)
+          const mesh = new THREE.Mesh(geometry, material)
+          group.add(mesh)
+        }
+      }
+      return group
     }
     return data
   }
